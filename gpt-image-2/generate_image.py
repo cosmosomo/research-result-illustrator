@@ -11,8 +11,8 @@ from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 
-CONFIG_KEYS = ("GPT_IMAGE_API_URL", "GPT_IMAGE_API_KEY")
-DEFAULT_OUTPUT = Path("outputs/generated.png")
+BASE_DIR = Path(__file__).resolve().parent
+DEFAULT_OUTPUT = BASE_DIR / "outputs/generated.png"
 
 
 def load_dotenv(path: Path) -> None:
@@ -90,11 +90,18 @@ def generate_image(prompt: str, output_path: Path) -> None:
     print(f"Saved image to {output_path}")
 
 
+def resolve_output_path(raw_path: str | None) -> Path:
+    if raw_path is None:
+        return DEFAULT_OUTPUT
+    output_path = Path(raw_path)
+    return output_path if output_path.is_absolute() else BASE_DIR / output_path
+
+
 def main() -> int:
     load_dotenv(Path(__file__).with_name(".env"))
     if len(sys.argv) < 2:
         raise RuntimeError('Usage: python generate_image.py "your image prompt" [output path]')
-    output_path = Path(sys.argv[2]) if len(sys.argv) >= 3 else DEFAULT_OUTPUT
+    output_path = resolve_output_path(sys.argv[2] if len(sys.argv) >= 3 else None)
     generate_image(sys.argv[1], output_path)
     return 0
 

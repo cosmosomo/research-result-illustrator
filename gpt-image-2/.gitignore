@@ -2,3 +2,5 @@
 outputs/
 __pycache__/
 *.pyc
+research-repos/*
+!research-repos/README.md

@@ -1,6 +1,6 @@
-# GPT Image 2 中转调用模板
+# GPT Image 2 调研与中转调用工作区
 
-这个目录提供一个不依赖第三方 Python 包的、OpenAI 兼容图像生成调用模板。它不会保存真实密钥，也不会在缺少配置时使用默认地址或伪造数据。
+这个目录包含 GPT Image 2 的原生接口调研、开源项目源码，以及一个不依赖第三方 Python 包的 OpenAI 兼容生成脚本。完整调研见 [RESEARCH.md](RESEARCH.md)，克隆项目见 [research-repos/README.md](research-repos/README.md)。
 
 ## 1. 配置中转站
 
@@ -12,13 +12,13 @@ GPT_IMAGE_API_KEY=
 GPT_IMAGE_MODEL=gpt-image-2
 ```
 
-`GPT_IMAGE_API_URL` 使用中转站提供的完整请求地址，例如通常是：
+`GPT_IMAGE_API_URL` 必须使用中转站提供的完整生成请求地址，例如：
 
 ```text
 https://your-relay.example.com/v1/images/generations
 ```
 
-不要把 URL 写成只包含域名的地址，除非中转站文档明确要求这样填写。若中转站使用了不同的路径或模型别名，以中转站的接口文档为准。
+不要只填写域名。OpenAI 原生兼容中转通常使用 `/v1/images/generations`，AceDataCloud 等平台代理使用自己的路径和返回格式，不能混用。
 
 ## 2. 调用
 
@@ -60,10 +60,12 @@ python generate_image.py "一间有落地窗的安静书房，写实风格" outp
 
 ## 3. 当前调研结论
 
-- 图像生成的核心调用方式是 `POST /images/generations`。
+- `gpt-image-2` 是 OpenAI 官方 SDK 已公开支持的模型名，另有固定快照 `gpt-image-2-2026-04-21`。
+- 原生生成接口是 `POST /v1/images/generations`；编辑接口是 `POST /v1/images/edits`。
 - 鉴权使用 `Authorization: Bearer <API_KEY>`。
-- `prompt` 用于描述要生成的图像；`size`、`quality`、`output_format` 作为可选参数发送。
-- GPT Image 2 的具体可用尺寸、质量档位和模型别名可能由 OpenAI 账户或中转站分别控制，因此没有在代码中硬编码额外参数。
+- 原生 GPT Image 模型返回 `data[0].b64_json`，不返回临时图片 URL；某些中转站会改成 `data[0].url`。
+- GPT Image 2 支持生成、最多 16 张参考图编辑、遮罩、1-10 张输出、流式部分图和自定义尺寸。
+- GPT Image 2 不支持透明背景；`background=transparent` 会报错。
 - 官方文档入口：[Image generation guide](https://developers.openai.com/api/docs/guides/image-generation)、[GPT Image 2 model page](https://developers.openai.com/api/docs/models/gpt-image-2)。
 
 ## 安全注意事项
