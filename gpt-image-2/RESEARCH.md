@@ -1,6 +1,6 @@
 # GPT Image 2 使用方法调研
 
-调研时间：2026-07-15。结论依据 OpenAI 官方 SDK、官方 Demo、官方 Skills，以及已克隆的社区平台 Skill。平台封装参数只代表该平台，不能当作 OpenAI 原生协议。
+调研时间：2026-07-15。结论依据 OpenAI 官方 SDK、官方 Demo、官方 Skills，以及已克隆的社区项目。平台封装参数只代表该平台，不能当作 OpenAI 原生协议。热门项目的 Star、体量、许可和风险分层见 [POPULAR_PROJECTS.md](POPULAR_PROJECTS.md)。
 
 ## 核心结论
 
@@ -108,9 +108,12 @@ AceDataCloud 的编辑接口使用 multipart 重复字段 `image[]`；inference.
 - 官方 Image Skill：`research-repos/openai-skills/skills/.system/imagegen/`
 - AceDataCloud 中转 Skill：`research-repos/acedatacloud-skills/skills/gpt-image-2/SKILL.md`
 - inference.sh Skill：`research-repos/inference-sh-skills/tools/image/gpt-image/SKILL.md`
-- 科研生成 Skill：`research-repos/claude-scientific-skills/skills/generate-image/`
-- 科研插图指南：`research-repos/research-plugins/skills/tools/diagram/scientific-illustration-guide/SKILL.md`
-- 创作图像工作流：`research-repos/krea-skills/krea-generate/SKILL.md`
+- 可运行 GPT Image 2 Skill：`research-repos/gpt-image2-skill/skills/gpt-image/`
+- 工业提示词 Style Skill：`research-repos/awesome-gpt-image-2-freestyle/agents/skills/gpt-image-2-style-library/`
+- 8K+ 提示词语料：`research-repos/awesome-gpt-image-2-youmind/README_zh.md`
+- 科研制图 Skill：`research-repos/nature-skills/skills/nature-figure/`
+- GPT Image 2 科研图生成/编辑：`research-repos/autofigure-edit/autofigure2.py`
+- 创作配图提示词：`research-repos/guizang-ppt-skill/references/image-prompts.md`
 
 ## 官方在线来源
 

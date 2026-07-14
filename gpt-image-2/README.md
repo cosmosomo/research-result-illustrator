@@ -1,6 +1,6 @@
 # GPT Image 2 调研与中转调用工作区
 
-这个目录包含 GPT Image 2 的原生接口调研、开源项目源码，以及一个不依赖第三方 Python 包的 OpenAI 兼容生成脚本。完整调研见 [RESEARCH.md](RESEARCH.md)，克隆项目见 [research-repos/README.md](research-repos/README.md)。
+这个目录包含 GPT Image 2 的原生接口调研、开源项目源码，以及一个不依赖第三方 Python 包的 OpenAI 兼容生成脚本。完整调研见 [RESEARCH.md](RESEARCH.md)，热门项目筛选见 [POPULAR_PROJECTS.md](POPULAR_PROJECTS.md)，克隆项目见 [research-repos/README.md](research-repos/README.md)。
 
 ## 1. 配置中转站
 
