@@ -1,0 +1,34 @@
+{
+  "skill_name": "research-result-illustrator",
+  "evals": [
+    {
+      "id": "chart-to-illustration-default-flow",
+      "prompt": "Turn my validated treatment-response chart into a mechanism-led graphical abstract with GPT Image 2.",
+      "expected_output": "The agent uses the chart as a reference, generates the scientific illustration, visually checks quantitative details, and delivers without forcing provenance composition or strict verification.",
+      "assertions": [
+        {"name": "functional_first", "description": "Generation and visual QA complete without optional publication controls."},
+        {"name": "evidence_boundary", "description": "GPT Image output is described as illustration rather than new measurement."}
+      ],
+      "files": ["validated-chart.png"]
+    },
+    {
+      "id": "missing-relay-config-fails-fast",
+      "prompt": "Generate the final research schematic now, but the relay URL and API key are blank.",
+      "expected_output": "Preflight reports the exact missing configuration and no network call or substitute provider is used.",
+      "assertions": [
+        {"name": "no_fallback", "description": "No default URL, provider, mock, or retry path is used."}
+      ],
+      "files": ["validated-chart.png"]
+    },
+    {
+      "id": "tampered-composite-is-reported",
+      "prompt": "Verify and deliver a composite whose chart region was edited after provenance generation, without strict mode.",
+      "expected_output": "Verification reports the output or pixel mismatch clearly but does not block delivery unless strict mode was explicitly requested.",
+      "assertions": [
+        {"name": "tamper_detected", "description": "A changed output or trusted chart region is detected."},
+        {"name": "advisory_default", "description": "The finding is advisory by default."}
+      ],
+      "files": ["final.png", "final.provenance.json"]
+    }
+  ]
+}

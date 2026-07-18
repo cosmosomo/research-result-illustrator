@@ -1,75 +1,45 @@
-# GPT Image 2 调研与中转调用工作区
+# GPT Image 2 科研结果示意图工作区
 
-这个目录包含 GPT Image 2 的原生接口调研、开源项目源码，以及一个不依赖第三方 Python 包的 OpenAI 兼容生成脚本。完整调研见 [RESEARCH.md](RESEARCH.md)，热门项目筛选见 [POPULAR_PROJECTS.md](POPULAR_PROJECTS.md)，克隆项目见 [research-repos/README.md](research-repos/README.md)。
+本目录的唯一使用入口是 [research-result-illustrator](skills/research-result-illustrator/SKILL.md)。它以 `nature-figure` 的 Figure Contract、证据层级、Nature 版式和投稿 QA 为骨架，融合 GPT Image 2 的生成、编辑、遮罩、多参考图和提示词参考。默认流程先完成科研生图；原图回贴、来源记录和像素核验是按需启用的论文级能力。
 
-## 1. 配置中转站
+调研材料仍保留在 [RESEARCH.md](RESEARCH.md)、[POPULAR_PROJECTS.md](POPULAR_PROJECTS.md) 和 [research-repos/README.md](research-repos/README.md)。
 
-复制 `.env.example` 为 `.env`，然后填写：
+## 配置
+
+真实调用 GPT Image 2 时，需要在 `.env` 填写：
 
 ```dotenv
-GPT_IMAGE_API_URL=
+GPT_IMAGE_GENERATE_URL=
+GPT_IMAGE_EDIT_URL=
 GPT_IMAGE_API_KEY=
-GPT_IMAGE_MODEL=gpt-image-2
 ```
 
-`GPT_IMAGE_API_URL` 必须使用中转站提供的完整生成请求地址，例如：
+其余必填协议参数已列在 `.env.example`，应按中转站文档确认。OpenAI 原生端点分别是：
 
 ```text
-https://your-relay.example.com/v1/images/generations
+https://api.openai.com/v1/images/generations
+https://api.openai.com/v1/images/edits
 ```
 
-不要只填写域名。OpenAI 原生兼容中转通常使用 `/v1/images/generations`，AceDataCloud 等平台代理使用自己的路径和返回格式，不能混用。
+中转站必须填写它实际提供的完整端点，不能只填写域名。若编辑字段使用 `image[]` 或结果返回 `data[0].url`，应在 `.env` 显式配置，不能依赖自动猜测。
 
-## 2. 调用
+只有 `generate` 和 `edit` 需要 URL/API Key。数据图合成 `compose` 和来源验证 `verify` 完全离线，不需要任何密钥。
 
-在本目录执行：
+## 默认使用顺序
 
-```text
-python generate_image.py "一间有落地窗的安静书房，写实风格"
-```
+1. 科研智能体输出数据图和想表达的结论。
+2. Skill 建立轻量 Figure Contract 和 GPT Image 提示词。
+3. `preflight` 校验配置、提示词和参考图。
+4. `generate` 或 `edit` 生成科研示意图。
+5. 进行视觉检查并交付。
 
-指定输出文件：
+当论文投稿、归档或用户明确要求保留原始数据像素时，再使用 `compose` 把数据图回贴到预留区域，并用 `verify` 检查来源和像素。普通 `verify` 只报告问题；`verify --strict` 才会因不一致停止交付。
 
-```text
-python generate_image.py "一间有落地窗的安静书房，写实风格" outputs/study.png
-```
+数据图、数值、坐标轴、误差线、显著性标记和比例尺不能由 GPT Image 输出替代。
 
-脚本发送 JSON 请求：
+## 安全
 
-```json
-{
-  "model": "gpt-image-2",
-  "prompt": "...",
-  "size": "1024x1024",
-  "quality": "auto",
-  "output_format": "png"
-}
-```
-
-中转站需要接受 OpenAI 兼容的 `POST /images/generations` 请求，并返回类似下面的结构：
-
-```json
-{
-  "data": [
-    {"b64_json": "..."}
-  ]
-}
-```
-
-脚本只处理 `data[0].b64_json`。如果中转站返回图片 URL、异步任务 ID 或其他字段，不能静默兼容，需要按中转站文档明确改写响应解析逻辑。
-
-## 3. 当前调研结论
-
-- `gpt-image-2` 是 OpenAI 官方 SDK 已公开支持的模型名，另有固定快照 `gpt-image-2-2026-04-21`。
-- 原生生成接口是 `POST /v1/images/generations`；编辑接口是 `POST /v1/images/edits`。
-- 鉴权使用 `Authorization: Bearer <API_KEY>`。
-- 原生 GPT Image 模型返回 `data[0].b64_json`，不返回临时图片 URL；某些中转站会改成 `data[0].url`。
-- GPT Image 2 支持生成、最多 16 张参考图编辑、遮罩、1-10 张输出、流式部分图和自定义尺寸。
-- GPT Image 2 不支持透明背景；`background=transparent` 会报错。
-- 官方文档入口：[Image generation guide](https://developers.openai.com/api/docs/guides/image-generation)、[GPT Image 2 model page](https://developers.openai.com/api/docs/models/gpt-image-2)。
-
-## 安全注意事项
-
-- 真实 `.env` 已加入 `.gitignore`，不要把 API Key 提交到 Git。
-- 不要把 API Key 放进命令行参数、截图或日志。
-- 中转站若要求额外请求头，应在 `generate_image.py` 的 `headers` 中按其文档添加，并保持显式报错。
+- `.env` 已被 Git 忽略，不要提交或输出 API Key。
+- Skill 不读取系统环境变量，也不使用默认 URL、备用模型或替代数据源。
+- 网络调用有显式超时和进度事件，不会静默重试。
+- 中转站返回格式与配置不一致时立即失败。

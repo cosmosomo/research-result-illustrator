@@ -35,7 +35,7 @@ Authorization: Bearer <API_KEY>
 Content-Type: application/json
 ```
 
-GPT Image 原生响应中的图片位于 `data[0].b64_json`，需要 Base64 解码后写入文件。当前目录的 `generate_image.py` 已实现这条路径。
+GPT Image 原生响应中的图片位于 `data[0].b64_json`，需要 Base64 解码后写入文件。当前统一入口 `skills/research-result-illustrator/scripts/research_illustrator.py` 已实现这条路径。
 
 ### 图片编辑与多图合成
 
@@ -78,7 +78,7 @@ GPT Image 原生响应中的图片位于 `data[0].b64_json`，需要 Base64 解�
 4. 编辑使用 JSON Data URL、multipart `image`，还是 multipart `image[]`。
 5. 是否支持 `stream`、任意尺寸、`input_fidelity`、遮罩和多图输入。
 
-当前 `generate_image.py` 只接受原生兼容的 `data[0].b64_json`。如果中转站返回 URL，脚本会明确报错，不会悄悄改走其他数据流。
+当前统一脚本通过 `GPT_IMAGE_RESPONSE_MODE` 显式选择 `data[0].b64_json` 或 `data[0].url`。返回格式与配置不一致时会明确报错，不会自动猜测或切换协议。
 
 ## 三种已验证调用形态
 

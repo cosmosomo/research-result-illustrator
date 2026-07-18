@@ -1,0 +1,53 @@
+name: research-result-illustrator
+version: 1.0.0
+description: >
+  Single-route research result illustration workflow derived from nature-figure.
+  It accepts research charts and uses GPT Image 2 to create scientific
+  illustrations, with optional exact-pixel composition and verification.
+
+always_load:
+  - static/core/contract.md
+  - static/core/stance.md
+
+route:
+  name: research_chart_to_gpt_image_illustration
+  prompt_reference: references/prompt-contract.md
+  script: scripts/research_illustrator.py
+  required_sequence:
+    - figure_contract
+    - preflight
+    - generate_or_edit
+    - visual_qa
+  optional_exact_evidence_sequence:
+    - compose
+    - verify
+    - strict_verify_when_requested
+
+references:
+  on_demand:
+    - condition: convert the scientific result into a conclusion, evidence hierarchy, panel map, and reviewer-risk checks
+      path: references/figure-contract.md
+    - condition: prepare a GPT Image 2 prompt or choose generate, edit, mask, or multiple references
+      path: references/prompt-contract.md
+    - condition: improve dense scientific, technical, data-visualization, or multi-panel prompts
+      path: references/gpt-image/craft.md
+    - condition: find concrete research paper figure prompt patterns
+      path: references/gpt-image/gallery-research-paper-figures.md
+    - condition: find scientific, educational, data-visualization, or technical illustration patterns
+      paths:
+        - references/gpt-image/gallery-scientific-and-educational.md
+        - references/gpt-image/gallery-data-visualization.md
+        - references/gpt-image/gallery-technical-illustration.md
+    - condition: verify GPT Image model and parameter semantics
+      path: references/gpt-image/openai-cookbook.md
+    - condition: choose a Nature-style mixed-modality layout
+      paths:
+        - references/design-theory.md
+        - references/common-patterns.md
+        - references/nature-2026-observations.md
+    - condition: write a publication figure legend
+      path: references/figure-legend-conventions.md
+    - condition: audit a manuscript, archive, or exact-evidence composite before delivery
+      path: references/qa-contract.md
+    - condition: audit copied source material and licenses
+      path: references/sources.md

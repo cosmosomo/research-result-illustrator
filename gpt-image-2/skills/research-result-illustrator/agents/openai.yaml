@@ -1,0 +1,4 @@
+interface:
+  display_name: "Research Result Illustrator"
+  short_description: "Turn research charts into GPT Image 2 illustrations"
+  default_prompt: "Use $research-result-illustrator to turn my research chart into a clear scientific illustration."
