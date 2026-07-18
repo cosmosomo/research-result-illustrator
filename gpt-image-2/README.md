@@ -35,6 +35,8 @@ https://api.openai.com/v1/images/edits
 
 当论文投稿、归档或用户明确要求保留原始数据像素时，再使用 `compose` 把数据图回贴到预留区域，并用 `verify` 检查来源和像素。普通 `verify` 只报告问题；`verify --strict` 才会因不一致停止交付。
 
+真实调用与拼接示例位于 [ischemia-repair-demo](examples/ischemia-repair-demo/)，包含可重复的合成数据、四子图、构图草案、最终提示词、GPT Image 2 输出和拼接成图。
+
 数据图、数值、坐标轴、误差线、显著性标记和比例尺不能由 GPT Image 输出替代。
 
 ## 安全

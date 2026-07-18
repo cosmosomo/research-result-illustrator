@@ -1,0 +1,25 @@
+group,replicate,hypoxic_area_percent
+Healthy control,1,7.203
+Healthy control,2,5.04
+Healthy control,3,4.751
+Healthy control,4,6.072
+Healthy control,5,8.648
+Healthy control,6,6.705
+Healthy control,7,5.416
+Healthy control,8,7.916
+Ischemia,1,47.649
+Ischemia,2,42.51
+Ischemia,3,38.995
+Ischemia,4,43.23
+Ischemia,5,37.83
+Ischemia,6,42.792
+Ischemia,7,42.792
+Ischemia,8,43.586
+Hydrogel treatment,1,13.659
+Hydrogel treatment,2,20.968
+Hydrogel treatment,3,12.03
+Hydrogel treatment,4,19.475
+Hydrogel treatment,5,21.397
+Hydrogel treatment,6,16.74
+Hydrogel treatment,7,17.738
+Hydrogel treatment,8,15.836

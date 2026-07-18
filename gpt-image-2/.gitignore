@@ -2,5 +2,6 @@
 outputs/
 __pycache__/
 *.pyc
+*.provenance.json
 research-repos/*
 !research-repos/README.md

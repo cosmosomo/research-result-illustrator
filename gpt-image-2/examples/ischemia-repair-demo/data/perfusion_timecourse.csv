@@ -1,0 +1,145 @@
+group,replicate,day,perfusion_percent_baseline
+Healthy control,1,0,105.207
+Healthy control,1,3,102.89
+Healthy control,1,7,100.845
+Healthy control,1,14,97.249
+Healthy control,1,21,104.851
+Healthy control,1,28,88.277
+Healthy control,2,0,102.493
+Healthy control,2,3,91.529
+Healthy control,2,7,98.432
+Healthy control,2,14,102.372
+Healthy control,2,21,91.773
+Healthy control,2,28,97.145
+Healthy control,3,0,104.579
+Healthy control,3,3,100.496
+Healthy control,3,7,102.919
+Healthy control,3,14,99.987
+Healthy control,3,21,97.622
+Healthy control,3,28,107.888
+Healthy control,4,0,100.975
+Healthy control,4,3,103.019
+Healthy control,4,7,97.671
+Healthy control,4,14,101.638
+Healthy control,4,21,97.308
+Healthy control,4,28,101.246
+Healthy control,5,0,99.624
+Healthy control,5,3,108.515
+Healthy control,5,7,102.185
+Healthy control,5,14,99.551
+Healthy control,5,21,97.29
+Healthy control,5,28,107.012
+Healthy control,6,0,100.924
+Healthy control,6,3,96.447
+Healthy control,6,7,98.265
+Healthy control,6,14,108.588
+Healthy control,6,21,104.968
+Healthy control,6,28,95.96
+Healthy control,7,0,98.95
+Healthy control,7,3,99.969
+Healthy control,7,7,100.091
+Healthy control,7,14,110.0
+Healthy control,7,21,88.876
+Healthy control,7,28,106.864
+Healthy control,8,0,107.661
+Healthy control,8,3,99.117
+Healthy control,8,7,102.833
+Healthy control,8,14,102.615
+Healthy control,8,21,97.866
+Healthy control,8,28,94.488
+Ischemia,1,0,99.882
+Ischemia,1,3,30.575
+Ischemia,1,7,45.735
+Ischemia,1,14,47.43
+Ischemia,1,21,58.186
+Ischemia,1,28,57.929
+Ischemia,2,0,102.863
+Ischemia,2,3,31.644
+Ischemia,2,7,45.317
+Ischemia,2,14,47.974
+Ischemia,2,21,55.444
+Ischemia,2,28,56.958
+Ischemia,3,0,94.873
+Ischemia,3,3,36.256
+Ischemia,3,7,37.373
+Ischemia,3,14,45.812
+Ischemia,3,21,53.695
+Ischemia,3,28,52.688
+Ischemia,4,0,101.471
+Ischemia,4,3,28.237
+Ischemia,4,7,35.299
+Ischemia,4,14,45.633
+Ischemia,4,21,46.019
+Ischemia,4,28,53.483
+Ischemia,5,0,95.903
+Ischemia,5,3,33.979
+Ischemia,5,7,40.197
+Ischemia,5,14,44.772
+Ischemia,5,21,53.626
+Ischemia,5,28,56.328
+Ischemia,6,0,107.144
+Ischemia,6,3,26.685
+Ischemia,6,7,41.946
+Ischemia,6,14,48.456
+Ischemia,6,21,54.914
+Ischemia,6,28,63.863
+Ischemia,7,0,100.447
+Ischemia,7,3,35.367
+Ischemia,7,7,40.804
+Ischemia,7,14,42.955
+Ischemia,7,21,56.558
+Ischemia,7,28,61.196
+Ischemia,8,0,103.63
+Ischemia,8,3,36.178
+Ischemia,8,7,43.175
+Ischemia,8,14,52.51
+Ischemia,8,21,54.615
+Ischemia,8,28,65.542
+Hydrogel treatment,1,0,99.285
+Hydrogel treatment,1,3,37.759
+Hydrogel treatment,1,7,56.954
+Hydrogel treatment,1,14,67.632
+Hydrogel treatment,1,21,79.129
+Hydrogel treatment,1,28,89.265
+Hydrogel treatment,2,0,99.99
+Hydrogel treatment,2,3,38.916
+Hydrogel treatment,2,7,54.024
+Hydrogel treatment,2,14,69.928
+Hydrogel treatment,2,21,81.045
+Hydrogel treatment,2,28,97.097
+Hydrogel treatment,3,0,98.129
+Hydrogel treatment,3,3,43.809
+Hydrogel treatment,3,7,51.425
+Hydrogel treatment,3,14,74.801
+Hydrogel treatment,3,21,77.743
+Hydrogel treatment,3,28,88.964
+Hydrogel treatment,4,0,101.838
+Hydrogel treatment,4,3,41.902
+Hydrogel treatment,4,7,61.113
+Hydrogel treatment,4,14,75.129
+Hydrogel treatment,4,21,85.585
+Hydrogel treatment,4,28,90.58
+Hydrogel treatment,5,0,110.0
+Hydrogel treatment,5,3,41.405
+Hydrogel treatment,5,7,47.496
+Hydrogel treatment,5,14,79.681
+Hydrogel treatment,5,21,80.835
+Hydrogel treatment,5,28,90.644
+Hydrogel treatment,6,0,102.901
+Hydrogel treatment,6,3,32.614
+Hydrogel treatment,6,7,57.164
+Hydrogel treatment,6,14,69.827
+Hydrogel treatment,6,21,80.228
+Hydrogel treatment,6,28,88.269
+Hydrogel treatment,7,0,109.661
+Hydrogel treatment,7,3,44.043
+Hydrogel treatment,7,7,43.194
+Hydrogel treatment,7,14,67.024
+Hydrogel treatment,7,21,88.159
+Hydrogel treatment,7,28,94.889
+Hydrogel treatment,8,0,104.515
+Hydrogel treatment,8,3,34.787
+Hydrogel treatment,8,7,51.92
+Hydrogel treatment,8,14,64.105
+Hydrogel treatment,8,21,76.191
+Hydrogel treatment,8,28,92.249
