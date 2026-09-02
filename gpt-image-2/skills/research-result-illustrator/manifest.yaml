@@ -1,5 +1,5 @@
 name: research-result-illustrator
-version: 1.0.0
+version: 1.1.0
 description: >
   Single-route research result illustration workflow derived from nature-figure.
   It accepts research charts and uses GPT Image 2 to create scientific
@@ -18,6 +18,8 @@ route:
     - preflight
     - generate_or_edit
     - visual_qa
+  optional_input_preparation:
+    - reference_sheet_when_multi_panel
   optional_exact_evidence_sequence:
     - compose
     - verify

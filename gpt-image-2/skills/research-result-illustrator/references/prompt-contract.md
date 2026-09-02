@@ -12,6 +12,7 @@ Style: clean vector-like scientific illustration, restrained palette, clear hier
 Exact short labels: <verbatim labels, or state that labels will be added later>
 Reserved evidence regions: <blank opaque boxes where original charts will be overlaid>
 Preserve: <identity, geometry, color mappings, and reference invariants>
+Scientific state lock: <preprocessing, normalization, axis, grouping/folds, uncertainty, immutable labels>
 Exclude: invented values, axes, p-values, error bars, microscopy, logos, unsupported mechanisms
 Output: <aspect ratio, orientation, background, intended use>
 ```
@@ -20,7 +21,7 @@ Output: <aspect ratio, orientation, background, intended use>
 
 - Use `generate` when references are unnecessary and the layout can be described precisely.
 - Use `edit` when a draft layout, experimental apparatus, subject, or visual identity must be preserved.
-- Use multiple references only when each reference has a named role.
+- Use multiple references only when each reference has a named independent role. When three or more panels describe one composite layout, use the deterministic `reference-sheet` command and send one reference.
 - Use a mask when only a bounded region may change. A mask reduces drift but does not guarantee scientific correctness.
 
 ## Chart handling
@@ -29,7 +30,24 @@ Output: <aspect ratio, orientation, background, intended use>
 - If a chart is supplied as a reference, state that it is layout guidance and will be replaced by the original chart.
 - Never ask GPT Image to redraw numeric labels faithfully as the sole integrity control.
 - Keep generated labels short. Add long labels and exact notation after generation with deterministic tools.
+- For a quantitative chart edit, say explicitly that the output is a layout blueprint and the original data geometry will be rebuilt or composited later.
+
+## Scientific state lock
+
+Before prompting, freeze every state transition that could change the interpretation:
+
+- raw, SNV, derivative, baseline-corrected, or other preprocessing state;
+- full-axis versus local normalization and whether smoothing or sign reversal is forbidden;
+- axis range and direction;
+- physical-group, replicate, fold, seed, and uncertainty definitions;
+- immutable window ranges, peak labels, class colors, and legend semantics.
+
+Repeat the relevant locks in `Preserve` and `Exclude`. This does not guarantee pixel fidelity; it makes drift easier to detect.
 
 ## Iteration
 
 Change one variable per retry: composition, reserved-box size, palette, illustration detail, or preservation strength. Do not silently retry API failures or progressively relax scientific exclusions.
+
+- For HTTP 524 on a multi-reference edit, replace the multipart inputs with one deterministic reference sheet; keep the prompt and model fixed.
+- For a false-positive `content_policy_violation` on benign science, neutralize wording only; keep the reference, model, state lock, and exclusions fixed.
+- Save each retry prompt separately and record the changed variable and result.

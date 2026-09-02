@@ -114,6 +114,37 @@ class ResearchIllustratorTests(unittest.TestCase):
             with self.assertRaisesRegex(MODULE.UserError, "Missing required configuration"):
                 MODULE.preflight_network("generate", config, prompt, [], None, None)
 
+    def test_reference_sheet_profiles_and_composes_source_panels(self) -> None:
+        with tempfile.TemporaryDirectory() as raw_directory:
+            directory = Path(raw_directory)
+            first = directory / "first.png"
+            second = directory / "second.png"
+            output = directory / "reference-sheet.png"
+            self.create_image(first, (80, 40), "white")
+            self.create_image(second, (40, 80), "#dceaf3")
+
+            profile = MODULE.profile_references([first, second])
+            self.assertEqual(profile["count"], 2)
+            self.assertEqual(profile["total_pixels"], 6400)
+
+            MODULE.build_reference_sheet(
+                [f"{first}@0,0,80,40", f"{second}@100,20,40,80"],
+                (160, 120),
+                "#ffffff",
+                output,
+            )
+
+            with Image.open(output) as image:
+                self.assertEqual(image.size, (160, 120))
+
+            with self.assertRaisesRegex(MODULE.UserError, "exceeds canvas"):
+                MODULE.build_reference_sheet(
+                    [f"{first}@100,100,80,40"],
+                    (160, 120),
+                    "#ffffff",
+                    output,
+                )
+
 
 if __name__ == "__main__":
     unittest.main()

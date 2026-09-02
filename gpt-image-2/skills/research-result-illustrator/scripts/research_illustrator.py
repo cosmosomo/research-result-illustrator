@@ -130,6 +130,38 @@ def validate_reference(path: Path) -> None:
         raise UserError(f"Reference image is invalid: {path}: {error}") from error
 
 
+def profile_references(reference_paths: list[Path]) -> dict[str, object]:
+    records: list[dict[str, object]] = []
+    total_bytes = 0
+    total_pixels = 0
+    for path in reference_paths:
+        try:
+            with Image.open(path) as image:
+                width, height = image.size
+        except Exception as error:
+            raise UserError(f"Could not profile reference image {path}: {error}") from error
+        file_bytes = path.stat().st_size
+        pixels = width * height
+        total_bytes += file_bytes
+        total_pixels += pixels
+        records.append(
+            {
+                "path": str(path),
+                "bytes": file_bytes,
+                "width": width,
+                "height": height,
+                "pixels": pixels,
+            }
+        )
+    return {
+        "count": len(records),
+        "total_bytes": total_bytes,
+        "total_pixels": total_pixels,
+        "estimated_rgba_bytes": total_pixels * 4,
+        "references": records,
+    }
+
+
 def validate_mask(mask_path: Path, first_reference: Path) -> None:
     if mask_path.suffix.lower() != ".png" or not mask_path.is_file():
         raise UserError("Mask must be an existing PNG file")
@@ -190,8 +222,23 @@ def run_with_heartbeat(label: str, operation: Callable[[], T]) -> T:
 def checked_response(response: httpx.Response, url: str) -> dict[str, object]:
     diagnostic_url = safe_url(url)
     if not response.is_success:
+        response_excerpt = response.text[:2000]
+        lower_excerpt = response_excerpt.lower()
+        guidance = ""
+        if response.status_code == 524:
+            guidance = (
+                " The relay timed out while processing the request. Do not repeat the identical "
+                "multi-reference request; build one deterministic reference sheet and retry explicitly."
+            )
+        elif "content_policy_violation" in lower_excerpt:
+            guidance = (
+                " If the source is benign scientific material, write one semantically equivalent "
+                "neutral prompt, preserve every scientific constraint and reference, record the prompt "
+                "change, and retry explicitly."
+            )
         raise UserError(
-            f"Image API returned HTTP {response.status_code} from {diagnostic_url}: {response.text[:2000]}"
+            f"Image API returned HTTP {response.status_code} from {diagnostic_url}: "
+            f"{response_excerpt}{guidance}"
         )
     try:
         payload = response.json()
@@ -294,6 +341,17 @@ def preflight_network(
             raise UserError("Edit mode supports at most 16 reference images")
         for reference_path in reference_paths:
             validate_reference(reference_path)
+        reference_profile = profile_references(reference_paths)
+        emit_event("reference_input_profile", **reference_profile)
+        if len(reference_paths) >= 3:
+            emit_event(
+                "preflight_advisory",
+                code="multi_reference_timeout_risk",
+                message=(
+                    "Three or more references increase multipart processing cost. Prefer one "
+                    "deterministic reference sheet when the images describe one composite layout."
+                ),
+            )
         if mask_path:
             validate_mask(mask_path, reference_paths[0])
     else:
@@ -420,6 +478,49 @@ def atomic_save_png(image: Image.Image, path: Path) -> None:
     temporary_path = path.with_name(f".{path.stem}.tmp.png")
     image.save(temporary_path, format="PNG", optimize=False)
     temporary_path.replace(path)
+
+
+def parse_canvas_size(raw_size: str) -> tuple[int, int]:
+    try:
+        width, height = (int(part) for part in raw_size.lower().split("x", 1))
+    except (TypeError, ValueError) as error:
+        raise UserError(f"Invalid canvas size {raw_size!r}; expected WIDTHxHEIGHT") from error
+    if width <= 0 or height <= 0:
+        raise UserError("Canvas width and height must be positive")
+    return width, height
+
+
+def build_reference_sheet(
+    panel_specs: list[str],
+    canvas_size: tuple[int, int],
+    background: str,
+    output_path: Path,
+) -> None:
+    if not panel_specs:
+        raise UserError("Reference sheet requires at least one --panel specification")
+    if output_path.suffix.lower() != ".png":
+        raise UserError("Reference sheet output must be PNG")
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        canvas = Image.new("RGBA", canvas_size, background)
+    except ValueError as error:
+        raise UserError(f"Invalid reference-sheet background color {background!r}") from error
+
+    source_paths: list[Path] = []
+    for spec in panel_specs:
+        panel_path, (x, y, width, height) = parse_chart_spec(spec)
+        if x + width > canvas.width or y + height > canvas.height:
+            raise UserError(f"Reference panel box exceeds canvas for {panel_path}")
+        canvas.alpha_composite(render_chart_panel(panel_path, width, height), dest=(x, y))
+        source_paths.append(panel_path)
+
+    atomic_save_png(canvas.convert("RGB"), output_path)
+    emit_event(
+        "reference_sheet_saved",
+        output=str(output_path),
+        canvas={"width": canvas.width, "height": canvas.height},
+        input_profile=profile_references(source_paths),
+    )
 
 
 def compose_figure(
@@ -574,6 +675,20 @@ def build_parser() -> argparse.ArgumentParser:
     add_network_arguments(edit_parser, include_references=True)
     edit_parser.add_argument("--output", required=True)
 
+    reference_sheet_parser = subparsers.add_parser(
+        "reference-sheet",
+        help="Build one deterministic reference image from multiple source panels",
+    )
+    reference_sheet_parser.add_argument(
+        "--panel",
+        action="append",
+        required=True,
+        help="PATH@X,Y,W,H; repeatable",
+    )
+    reference_sheet_parser.add_argument("--canvas", required=True, help="WIDTHxHEIGHT")
+    reference_sheet_parser.add_argument("--background", required=True, help="Pillow color value")
+    reference_sheet_parser.add_argument("--output", required=True)
+
     compose_parser = subparsers.add_parser("compose", help="Overlay immutable charts onto a schematic")
     compose_parser.add_argument("--schematic", required=True)
     compose_parser.add_argument("--chart", action="append", required=True, help="PATH@X,Y,W,H; repeatable")
@@ -592,6 +707,17 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main() -> int:
     args = build_parser().parse_args()
+    if args.command == "reference-sheet":
+        output_path = resolved_path(args.output)
+        build_reference_sheet(
+            args.panel,
+            parse_canvas_size(args.canvas),
+            args.background,
+            output_path,
+        )
+        print(output_path)
+        return 0
+
     if args.command in {"preflight", "generate", "edit"}:
         mode = args.mode if args.command == "preflight" else args.command
         config_path = resolved_path(args.config)

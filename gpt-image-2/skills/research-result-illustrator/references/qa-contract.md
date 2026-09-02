@@ -38,6 +38,25 @@ submission. The values below are conservative defaults for Nature-family style w
 | Provenance manifest | For exact-evidence mode, source hashes, final hash, and trusted chart-region pixel hashes are reviewed |
 | AI/data boundary | Generated content is conceptual; every quantitative pixel comes from a trusted panel |
 
+## Source-versus-output drift audit
+
+Audit these layers separately after every chart edit:
+
+| Layer | Check |
+|---|---|
+| Layout | Panel count, hierarchy, aspect ratio, gutters, and reserved evidence regions |
+| Text | Panel letters, ranges, units, class names, peak labels, legends, and spelling |
+| Quantitative geometry | Point count/location, curve extrema, shoulders, widths, heatmap cells, error bars, and min-max/interval marks |
+| Scientific state | Raw/SNV/derivative state, full/local normalization, smoothing, sign, axis direction, group/fold unit, and uncertainty definition |
+
+Classify the result as one of:
+
+- `conceptual candidate`: generated content carries no measured claim;
+- `layout blueprint`: hierarchy is useful but quantitative pixels drifted or were redrawn;
+- `exact-evidence composite`: trusted source panels were deterministically placed and verified.
+
+Do not promote a layout blueprint to a publication figure by visual inspection alone.
+
 ## Statistics legend minimum
 
 For each quantitative panel, capture:

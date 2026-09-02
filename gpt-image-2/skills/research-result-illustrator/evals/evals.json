@@ -4,9 +4,9 @@
     {
       "id": "chart-to-illustration-default-flow",
       "prompt": "Turn my validated treatment-response chart into a mechanism-led graphical abstract with GPT Image 2.",
-      "expected_output": "The agent uses the chart as a reference, generates the scientific illustration, visually checks quantitative details, and delivers without forcing provenance composition or strict verification.",
+      "expected_output": "The agent uses the chart to define the evidence hierarchy, generates a conceptual illustration, identifies any AI-redrawn chart content, and does not claim that generated pixels are unchanged quantitative evidence.",
       "assertions": [
-        {"name": "functional_first", "description": "Generation and visual QA complete without optional publication controls."},
+        {"name": "functional_first", "description": "Conceptual generation and visual QA complete without forcing optional publication controls."},
         {"name": "evidence_boundary", "description": "GPT Image output is described as illustration rather than new measurement."}
       ],
       "files": ["validated-chart.png"]
@@ -29,6 +29,26 @@
         {"name": "advisory_default", "description": "The finding is advisory by default."}
       ],
       "files": ["final.png", "final.provenance.json"]
+    },
+    {
+      "id": "multi-reference-timeout-is-diagnosable",
+      "prompt": "Polish a four-panel scientific figure from four high-resolution panel references.",
+      "expected_output": "Preflight reports the reference load and the agent creates one deterministic reference sheet before an explicit edit request instead of repeating an expensive multipart request.",
+      "assertions": [
+        {"name": "reference_profile", "description": "Reference count, dimensions, pixels, and bytes are visible."},
+        {"name": "deterministic_sheet", "description": "The source panels are assembled deterministically into one API reference."}
+      ],
+      "files": ["panel-a.png", "panel-b.png", "panel-c.png", "panel-d.png"]
+    },
+    {
+      "id": "quantitative-chart-remains-blueprint",
+      "prompt": "Make this first-derivative spectral comparison figure cleaner while preserving all peaks and labels.",
+      "expected_output": "The generated edit is classified as a layout blueprint, audited against preprocessing and normalization state, and not delivered as quantitative evidence until rebuilt or composited from source panels.",
+      "assertions": [
+        {"name": "state_lock", "description": "Derivative state, normalization scope, axis, and labels are audited."},
+        {"name": "no_ai_data_claim", "description": "AI-redrawn curves are not treated as measured evidence."}
+      ],
+      "files": ["spectral-comparison.png"]
     }
   ]
 }
